@@ -15,7 +15,7 @@ export async function POST(req: NextRequest) {
 
   const errors: { field: string; msg: string }[] = [];
   if (!name) errors.push({ field: 'name', msg: 'பெயர் தேவை' });
-  if (!email || !EMAIL_RE.test(email)) errors.push({ field: 'email', msg: 'சரியான மின்னஞ்சல் தேவை' });
+  if (email && !EMAIL_RE.test(email)) errors.push({ field: 'email', msg: 'சரியான மின்னஞ்சல் தேவை' });
   if (!mobile || !MOBILE_RE.test(mobile)) errors.push({ field: 'mobile', msg: 'சரியான மொபைல் எண் தேவை' });
   if (!otp) errors.push({ field: 'otp', msg: 'OTP தேவை' });
   if (errors.length) return NextResponse.json({ errors }, { status: 400 });
@@ -25,7 +25,9 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const existing = await prisma.user.findFirst({ where: { OR: [{ email }, { mobile }] } });
+    const existing = await prisma.user.findFirst({
+      where: email ? { OR: [{ email }, { mobile }] } : { mobile }
+    });
     if (existing) {
       return NextResponse.json(
         { error: 'இந்த மின்னஞ்சல் அல்லது மொபைல் ஏற்கனவே பதிவாகியுள்ளது.' },
@@ -34,7 +36,7 @@ export async function POST(req: NextRequest) {
     }
 
     const user = await prisma.user.create({
-      data: { name, email, mobile, passwordHash: OTP_ONLY_HASH }
+      data: { name, email: email || null, mobile, passwordHash: OTP_ONLY_HASH }
     });
     const token = signToken({ userId: user.id, isAdmin: user.isAdmin });
 

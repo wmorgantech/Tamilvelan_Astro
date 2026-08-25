@@ -31,6 +31,7 @@ export default function RegisterPage() {
   const [form, setForm] = useState<Form>({ name: '', email: '', mobile: '', otp: '' });
   const [otpSent, setOtpSent] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [alreadyRegistered, setAlreadyRegistered] = useState(false);
 
   const onChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -38,13 +39,14 @@ export default function RegisterPage() {
                : name === 'mobile' ? value.replace(/\D/g, '').slice(0, 10)
                : value;
     setForm({ ...form, [name]: next });
+    if (alreadyRegistered) setAlreadyRegistered(false);
   };
 
   const sendOtp = () => {
     const errs: string[] = [];
     if (!form.name) errs.push('பெயர் / Name');
     if (!MOBILE_RE.test(form.mobile)) errs.push('சரியான மொபைல் / valid mobile');
-    if (!EMAIL_RE.test(form.email)) errs.push('சரியான மின்னஞ்சல் / valid email');
+    if (form.email && !EMAIL_RE.test(form.email)) errs.push('சரியான மின்னஞ்சல் / valid email');
     if (errs.length) {
       toast.error(`தேவை: ${errs.join(', ')}`);
       return;
@@ -56,11 +58,17 @@ export default function RegisterPage() {
   const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
+    setAlreadyRegistered(false);
     try {
       const user = await register(form);
       toast.success(`வரவேற்கிறோம் / Welcome, ${user.name}!`);
       router.push('/');
     } catch (err: unknown) {
+      const status = (err as { response?: { status?: number } }).response?.status;
+      if (status === 409) {
+        setAlreadyRegistered(true);
+        return;
+      }
       const data = (err as { response?: { data?: { error?: string; errors?: { msg: string }[] } } }).response?.data;
       const msg = data?.error || data?.errors?.[0]?.msg || 'பதிவு தோல்வி / Registration failed';
       toast.error(msg);
@@ -83,6 +91,23 @@ export default function RegisterPage() {
       <p style={{ color: '#6B5A8A', marginBottom: '24px', fontSize: '13px', fontFamily: 'system-ui, sans-serif' }}>
         Create a free account with OTP
       </p>
+
+      {alreadyRegistered && (
+        <div style={{
+          background: '#3A1F1F', border: '1px solid #7A3A3A', borderRadius: '14px',
+          padding: '16px', marginBottom: '20px'
+        }}>
+          <p style={{ color: '#FFD4D4', fontSize: '13px', marginBottom: '2px', fontFamily: 'Noto Sans Tamil, sans-serif' }}>
+            இந்த மின்னஞ்சல் அல்லது மொபைல் ஏற்கனவே பதிவாகியுள்ளது. தயவுசெய்து Login செய்யவும்.
+          </p>
+          <p style={{ color: '#D9A8A8', fontSize: '12px', marginBottom: '12px', fontFamily: 'system-ui, sans-serif' }}>
+            This mobile number or email is already registered. Please login.
+          </p>
+          <Link href="/login" className="btn-gold" style={{ display: 'inline-block', padding: '8px 20px', fontSize: '13px' }}>
+            உள்நுழை / Login
+          </Link>
+        </div>
+      )}
 
       <form
         onSubmit={onSubmit}
@@ -107,7 +132,7 @@ export default function RegisterPage() {
           />
         </div>
         <div style={{ marginBottom: otpSent ? '14px' : '20px' }}>
-          <BiLabel ta="மின்னஞ்சல்" en="Email" />
+          <BiLabel ta="மின்னஞ்சல் (விருப்பத்தேர்வு)" en="Email (optional)" />
           <input
             type="email"
             name="email"
