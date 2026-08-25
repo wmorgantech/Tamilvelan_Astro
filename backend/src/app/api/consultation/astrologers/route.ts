@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '../../../../lib/prisma';
 
+export const dynamic = 'force-dynamic';
+
 // Default seed astrologers used when the DB is empty. Auto-seeded on first call
 // so the booking flow is demoable without manual setup.
 const SEED = [

@@ -17,16 +17,15 @@ model User {
   createdAt     DateTime        @default(now())
   updatedAt     DateTime        @updatedAt
   birthProfiles BirthProfile[]
-  reports       Report[]
   consultations Consultation[]
-  payments      Payment[]
   matches       MarriageMatch[]
+  payments      Payment[]
+  reports       Report[]
 }
 
 model BirthProfile {
   id         String           @id @default(uuid())
   userId     String
-  user       User             @relation(fields: [userId], references: [id])
   fullName   String
   dob        DateTime
   birthTime  String
@@ -35,13 +34,13 @@ model BirthProfile {
   longitude  Float
   isDefault  Boolean          @default(false)
   createdAt  DateTime         @default(now())
+  user       User             @relation(fields: [userId], references: [id])
   charts     HoroscopeChart[]
 }
 
 model HoroscopeChart {
   id          String       @id @default(uuid())
   profileId   String
-  profile     BirthProfile @relation(fields: [profileId], references: [id])
   rasi        String
   lagna       String
   nakshatra   String
@@ -49,12 +48,12 @@ model HoroscopeChart {
   dashaEnd    DateTime?
   planetsJson Json
   generatedAt DateTime     @default(now())
+  profile     BirthProfile @relation(fields: [profileId], references: [id])
 }
 
 model MarriageMatch {
   id              String   @id @default(uuid())
   userId          String
-  user            User     @relation(fields: [userId], references: [id])
   brideName       String
   brideDob        DateTime
   brideBirthTime  String
@@ -66,17 +65,18 @@ model MarriageMatch {
   porutthamJson   Json
   totalScore      Int
   createdAt       DateTime @default(now())
+  user            User     @relation(fields: [userId], references: [id])
 }
 
 model Report {
   id        String   @id @default(uuid())
   userId    String
-  user      User     @relation(fields: [userId], references: [id])
-  type      String // KUNDLI | MARRIAGE | YEARLY | BUSINESS
+  type      String
   fileUrl   String?
   paid      Boolean  @default(false)
   amount    Int      @default(0)
   createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id])
 }
 
 model Astrologer {
@@ -94,26 +94,26 @@ model Astrologer {
 model Consultation {
   id           String     @id @default(uuid())
   userId       String
-  user         User       @relation(fields: [userId], references: [id])
   astrologerId String
-  astrologer   Astrologer @relation(fields: [astrologerId], references: [id])
   date         DateTime
   timeSlot     String
   status       String     @default("PENDING")
   paymentId    String?
   createdAt    DateTime   @default(now())
+  astrologer   Astrologer @relation(fields: [astrologerId], references: [id])
+  user         User       @relation(fields: [userId], references: [id])
 }
 
 model Payment {
   id              String   @id @default(uuid())
   userId          String
-  user            User     @relation(fields: [userId], references: [id])
   razorpayOrderId String?
   amount          Int
   currency        String   @default("INR")
   status          String   @default("PENDING")
   purpose         String
   createdAt       DateTime @default(now())
+  user            User     @relation(fields: [userId], references: [id])
 }
 
 model PanchangCache {
