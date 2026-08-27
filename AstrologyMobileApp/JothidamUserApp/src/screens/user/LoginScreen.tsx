@@ -12,7 +12,7 @@ import {
 import { styled } from '../../utils/styled';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '../../context/AuthContext';
 import Logo from '../../components/common/Logo';
@@ -38,6 +38,7 @@ export default function LoginScreen({ navigation }: any) {
   const [otpSent, setOtpSent] = useState(false);
   const [loading, setLoading] = useState(false);
   const [identifierError, setIdentifierError] = useState('');
+  const otpInput = useRef<TextInput>(null);
 
   // Handle identifier change (mobile or email)
   const handleIdentifierChange = (text: string) => {
@@ -60,6 +61,7 @@ export default function LoginScreen({ navigation }: any) {
 
   // Handle Login
   const handleLogin = async () => {
+    if (loading) return;
     if (!identifier || !otp) {
       notifyAlert('Error', 'Identifier and OTP required');
       return;
@@ -166,6 +168,11 @@ export default function LoginScreen({ navigation }: any) {
                   keyboardType="default"
                   autoCapitalize="none"
                   autoCorrect={false}
+                  returnKeyType="done"
+                  onSubmitEditing={() => {
+                    if (!otpSent) sendOtp();
+                    else otpInput.current?.focus();
+                  }}
                 />
                 {identifier.length > 0 && !otpSent && (
                   <StyledTouchable onPress={() => setIdentifier('')}>
@@ -202,6 +209,7 @@ export default function LoginScreen({ navigation }: any) {
                   <StyledView className="bg-dark border border-gold/30 rounded-xl px-4 py-3 flex-row items-center">
                     <Ionicons name="key-outline" size={20} color="#666" />
                     <StyledInput
+                      ref={otpInput}
                       className="flex-1 text-light-text ml-2 text-center text-xl tracking-widest"
                       placeholder="• • • •"
                       placeholderTextColor="#666"
@@ -210,6 +218,8 @@ export default function LoginScreen({ navigation }: any) {
                       keyboardType="number-pad"
                       maxLength={6}
                       autoFocus
+                      returnKeyType="done"
+                      onSubmitEditing={handleLogin}
                     />
                     {otp.length > 0 && (
                       <StyledTouchable onPress={() => setOtp('')}>

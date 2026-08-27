@@ -72,17 +72,18 @@ const FIXED_ANNUAL_DAYS: FixedDay[] = [
 const VARIABLE_DATE_EVENTS_BY_YEAR: Record<number, Array<{ isoDate: string; ta: string; en: string; kind: HolidayKind }>> = {
   2026: [
     { isoDate: '2026-01-14', ta: 'பொங்கல்',                  en: 'Pongal',                   kind: 'tamilnadu' },
-    { isoDate: '2026-02-17', ta: 'மகா சிவராத்திரி',           en: 'Maha Shivaratri',          kind: 'optional' },
+    { isoDate: '2026-02-15', ta: 'மகா சிவராத்திரி',           en: 'Maha Shivaratri',          kind: 'optional' },
     { isoDate: '2026-03-04', ta: 'ஹோலி',                     en: 'Holi',                     kind: 'national' },
     { isoDate: '2026-03-21', ta: 'ஈத்-உல்-ஃபித்ர்',           en: 'Eid-ul-Fitr',              kind: 'national' },
+    { isoDate: '2026-03-26', ta: 'ராம நவமி',                  en: 'Ram Navami',               kind: 'optional' },
     { isoDate: '2026-04-03', ta: 'குட் ஃபிரைடே',              en: 'Good Friday',              kind: 'national' },
-    { isoDate: '2026-04-26', ta: 'ராம நவமி',                  en: 'Ram Navami',               kind: 'optional' },
     { isoDate: '2026-05-28', ta: 'பக்ரீத் (ஈத்-உல்-அழா)',    en: 'Bakrid (Eid-ul-Adha)',     kind: 'national' },
+    // Moon-sighting dependent — India-wide gazette sources split between Jun 25/26; confirm locally closer to the date.
     { isoDate: '2026-06-26', ta: 'முஹர்ரம்',                  en: 'Muharram',                 kind: 'national' },
-    { isoDate: '2026-08-27', ta: 'விநாயக சதுர்த்தி',          en: 'Vinayaka Chaturthi',       kind: 'optional' },
-    { isoDate: '2026-09-04', ta: 'மிலாது-உன்-நபி',           en: 'Milad-un-Nabi',            kind: 'national' },
-    { isoDate: '2026-10-20', ta: 'ஆயுத பூஜை',                en: 'Ayudha Pooja',             kind: 'tamilnadu' },
-    { isoDate: '2026-10-21', ta: 'விஜயதசமி',                 en: 'Vijayadasami',             kind: 'tamilnadu' },
+    { isoDate: '2026-08-26', ta: 'மிலாது-உன்-நபி',           en: 'Milad-un-Nabi',            kind: 'national' },
+    { isoDate: '2026-09-14', ta: 'விநாயக சதுர்த்தி',          en: 'Vinayaka Chaturthi',       kind: 'optional' },
+    { isoDate: '2026-10-19', ta: 'ஆயுத பூஜை',                en: 'Ayudha Pooja',             kind: 'tamilnadu' },
+    { isoDate: '2026-10-20', ta: 'விஜயதசமி',                 en: 'Vijayadasami',             kind: 'tamilnadu' },
     { isoDate: '2026-11-08', ta: 'தீபாவளி',                  en: 'Deepavali',                kind: 'national' }
   ]
 };

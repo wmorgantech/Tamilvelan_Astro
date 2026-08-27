@@ -372,7 +372,7 @@ export default function MuhurthamScreen({ navigation }: any) {
                 </StyledView>
               ) : (
                 <StyledText className="text-dark font-bold text-base">
-                  ✨ சுபமுகூர்த்தம் கண்டறி
+                  ✨ முகூர்த்தம் தேடு
                 </StyledText>
               )}
             </StyledTouchable>

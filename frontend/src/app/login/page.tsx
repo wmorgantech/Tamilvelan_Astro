@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, FormEvent } from 'react';
+import { useEffect, useRef, useState, FormEvent } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
@@ -21,6 +21,7 @@ export default function LoginPage() {
   const [otp, setOtp] = useState('');
   const [otpSent, setOtpSent] = useState(false);
   const [loading, setLoading] = useState(false);
+  const otpInputRef = useRef<HTMLInputElement>(null);
 
   // If the user types digits only, cap at 10. Otherwise treat as free email text.
   const onIdentifierChange = (raw: string) => {
@@ -38,8 +39,20 @@ export default function LoginPage() {
     toast.success('OTP அனுப்பப்பட்டது — 1234 பயன்படுத்தவும் / OTP sent — use 1234');
   };
 
+  useEffect(() => {
+    if (otpSent) otpInputRef.current?.focus();
+  }, [otpSent]);
+
+  // Enter key submits this form at any stage — before the OTP step it must
+  // send the OTP (not attempt login with an empty otp), matching what the
+  // "Send OTP" button (type="button", so it never triggers this) does.
   const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (loading) return;
+    if (!otpSent) {
+      sendOtp();
+      return;
+    }
     if (!identifier || !otp) {
       toast.error('மொபைல்/மின்னஞ்சல் மற்றும் OTP தேவை / Identifier and OTP required');
       return;
@@ -113,6 +126,7 @@ export default function LoginPage() {
                 <span style={enSub}>One-time password</span>
               </label>
               <input
+                ref={otpInputRef}
                 type="text"
                 inputMode="numeric"
                 value={otp}

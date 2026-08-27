@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, ChangeEvent, FormEvent } from 'react';
+import { useEffect, useRef, useState, ChangeEvent, FormEvent } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
@@ -31,6 +31,11 @@ export default function RegisterPage() {
   const [form, setForm] = useState<Form>({ name: '', email: '', mobile: '', otp: '' });
   const [otpSent, setOtpSent] = useState(false);
   const [loading, setLoading] = useState(false);
+<<<<<<< HEAD
+=======
+  const [alreadyRegistered, setAlreadyRegistered] = useState(false);
+  const otpInputRef = useRef<HTMLInputElement>(null);
+>>>>>>> fc17ff2 (Fix festival dates and authentication form flow)
 
   const onChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -53,8 +58,20 @@ export default function RegisterPage() {
     toast.success('OTP அனுப்பப்பட்டது — 1234 பயன்படுத்தவும் / OTP sent — use 1234');
   };
 
+  useEffect(() => {
+    if (otpSent) otpInputRef.current?.focus();
+  }, [otpSent]);
+
+  // Enter key submits this form at any stage — before the OTP step it must
+  // send the OTP (not attempt registration with an empty otp), matching what
+  // the "Send OTP" button (type="button", so it never triggers this) does.
   const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (loading) return;
+    if (!otpSent) {
+      sendOtp();
+      return;
+    }
     setLoading(true);
     try {
       const user = await register(form);
@@ -135,6 +152,7 @@ export default function RegisterPage() {
             <div style={{ marginBottom: '20px' }}>
               <BiLabel ta="OTP" en="One-time password" />
               <input
+                ref={otpInputRef}
                 type="text"
                 inputMode="numeric"
                 name="otp"

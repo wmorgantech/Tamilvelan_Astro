@@ -218,7 +218,7 @@ export default function MuhurthamPage() {
               className="btn-gold"
               style={{ width: '100%' }}
             >
-              சுபமுகூர்த்தம் கண்டறி / Find Muhurthams
+              முகூர்த்தம் தேடு / Find Muhurthams
             </button>
           </div>
         </div>

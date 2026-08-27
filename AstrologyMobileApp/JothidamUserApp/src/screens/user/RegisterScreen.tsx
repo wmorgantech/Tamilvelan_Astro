@@ -92,6 +92,7 @@ export default function RegisterScreen({ navigation }: any) {
 
   // Handle Registration
   const handleRegister = async () => {
+    if (loading) return;
     if (!form.otp) {
       notifyAlert('Error', 'OTP required');
       return;
@@ -273,6 +274,8 @@ export default function RegisterScreen({ navigation }: any) {
                       keyboardType="number-pad"
                       maxLength={6}
                       autoFocus
+                      returnKeyType="done"
+                      onSubmitEditing={handleRegister}
                     />
                     {form.otp.length > 0 && (
                       <StyledTouchable onPress={() => handleChange('otp', '')}>
