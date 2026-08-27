@@ -31,11 +31,7 @@ export default function RegisterPage() {
   const [form, setForm] = useState<Form>({ name: '', email: '', mobile: '', otp: '' });
   const [otpSent, setOtpSent] = useState(false);
   const [loading, setLoading] = useState(false);
-<<<<<<< HEAD
-=======
-  const [alreadyRegistered, setAlreadyRegistered] = useState(false);
   const otpInputRef = useRef<HTMLInputElement>(null);
->>>>>>> fc17ff2 (Fix festival dates and authentication form flow)
 
   const onChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
